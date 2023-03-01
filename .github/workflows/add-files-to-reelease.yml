@@ -1,8 +1,11 @@
 name: add-files-to-release
 
 on:
-  release:
-    types: [created]
+  workflow_run:
+    workflows: ["goreleaser"]
+    types:
+      - completed
+
 jobs:
   add-files-to-release:
     name: Build and upload docker image
@@ -20,8 +23,8 @@ jobs:
           sed -i -e 's/image: zkevm-node/image: zkevm-node:${{ github.ref }}/g' testnet/docker-compose.yml
           zip -r testnet.zip testnet
       - name: Upload to release
-        uses: JasonEtco/upload-to-release@master
+        uses: AButler/upload-release-assets@v2.0
         with:
-          args: testnet.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: 'testnet.zip'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{ github.ref }}
