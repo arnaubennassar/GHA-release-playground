@@ -1,6 +1,8 @@
 name: add-files-to-release
 
-on: release
+on:
+  release:
+    types: [created]
 
 jobs:
   add-files-to-release:
@@ -18,11 +20,9 @@ jobs:
           mv testnet/config/environments/public/example.env testnet
           sed -i -e 's/image: zkevm-node/image: zkevm-node:${{ github.ref }}/g' testnet/docker-compose.yml
           zip -r testnet.zip testnet
-      - name: Upload testnet zip to release
-        uses: svenstaro/upload-release-action@v2
+      - name: Upload to release
+        uses: JasonEtco/upload-to-release@master
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: testnet.zip
-          asset_name: testnet.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+          args: testnet.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
