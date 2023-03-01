@@ -3,7 +3,6 @@ name: add-files-to-release
 on:
   release:
     types: [created]
-
 jobs:
   add-files-to-release:
     name: Build and upload docker image
