@@ -23,4 +23,4 @@ jobs:
         with:
           args: testnet.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_RELEASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
