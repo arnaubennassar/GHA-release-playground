@@ -3,7 +3,7 @@ name: goreleaser
 on:
   push:
     tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+' # this action will only run on tags that follow semver
+    - 'v[0-9]+.[0-9]+.[0-9]+*' # this action will only run on tags that follow semver
 
 jobs:
   goreleaser:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: 1.18
-          
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
