@@ -1,14 +1,19 @@
 name: add-files-to-release
 
 on:
-  workflow_run:
-    workflows: ["goreleaser"]
+  release:
     types:
-      - completed
+      - published
+
+# on:
+#   workflow_run:
+#     workflows: ["goreleaser"]
+#     types:
+#       - completed
 
 jobs:
   add-files-to-release:
-    name: Build and upload docker image
+    name: Add testnet files to release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -25,9 +30,19 @@ jobs:
           echo $GIT_TAG_NAME
           sed -i -e "s/image: zkevm-node/image: zkevm-node:$GIT_TAG_NAME/g" testnet/docker-compose.yml
           zip -r testnet.zip testnet
-      - name: Upload to release
-        uses: AButler/upload-release-assets@v2.0
+      # - name: Upload to release
+      #   uses: AButler/upload-release-assets@v2.0
+      #   with:
+      #     files: 'testnet.zip'
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     release-tag: ${{ steps.tagName.outputs.tag }}
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: 'testnet.zip'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          release-tag: ${{ steps.tagName.outputs.tag }}
+          upload_url: ${{ github.event.release.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ./testnet.zip
+          asset_name: testnet.zip
+          asset_content_type: application/zip
