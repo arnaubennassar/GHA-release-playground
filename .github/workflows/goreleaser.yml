@@ -26,7 +26,9 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - uses: olegtarasov/get-tag@v2.1.2
+          
+      - name: Get tag
+        uses: olegtarasov/get-tag@v2.1.2
         id: tagName
 
       - name: Put testnet artifacts into a single zip
@@ -39,7 +41,7 @@ jobs:
           echo $GIT_TAG_NAME
           sed -i -e "s/image: zkevm-node/image: zkevm-node:$GIT_TAG_NAME/g" testnet/docker-compose.yml
           zip -r testnet.zip testnet
-          
+
       - name: Upload to release
         uses: AButler/upload-release-assets@v2.0
         with:
