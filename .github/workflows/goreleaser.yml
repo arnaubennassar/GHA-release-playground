@@ -34,10 +34,12 @@ jobs:
       - name: Put testnet artifacts into a single zip
         run: |
           mkdir -p testnet/config/environments/public
+          mkdir -p testnet/db/scripts
           cp config/environments/public/* testnet/config/environments/public
           cp docker-compose.yml testnet
+          cp db/scripts/init_prover_db.sql testnet/db/scripts
           mv testnet/config/environments/public/example.env testnet
-          sed -i -e "s/image: zkevm-node/image: zkevm-node:$GIT_TAG_NAME/g" testnet/docker-compose.yml
+          sed -i -e "s/image: zkevm-node/image: hermeznetwork\/zkevm-node:$GIT_TAG_NAME/g" testnet/docker-compose.yml
           zip -r testnet.zip testnet
 
       - name: Upload to release
